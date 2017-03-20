@@ -120,13 +120,13 @@
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem title="Edit" id="oOQ-OX-LJx"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="IAC-FH-jeu"/>
-                                    <barButtonItem systemItem="add" id="3r1-pC-T4q">
+                                    <barButtonItem title="Edit" id="oOQ-OX-LJx">
                                         <connections>
-                                            <action selector="editButtonPressed:" destination="Xu5-AP-0P3" id="kys-uP-2cc"/>
+                                            <action selector="editButtonPressed:" destination="Xu5-AP-0P3" id="cqD-mZ-8d0"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="IAC-FH-jeu"/>
+                                    <barButtonItem systemItem="add" id="3r1-pC-T4q"/>
                                 </items>
                             </toolbar>
                         </subviews>
