@@ -37,11 +37,9 @@ class DetailVC: UIViewController {
     
     func updateUserInterface() {
         
-        if locationsArray[currentPage].currentTemp == -999.9 {
-            temperatureLabel.isHidden = true
-        } else {
-            temperatureLabel.isHidden = false
-        }
+        let isHidden = (locationsArray[currentPage].currentTemp == -999.9)
+        temperatureLabel.isHidden = isHidden
+        locationLabel.isHidden = isHidden
         
         locationLabel.text = locationsArray[currentPage].name
         dateLabel.text = locationsArray[currentPage].coordinates
