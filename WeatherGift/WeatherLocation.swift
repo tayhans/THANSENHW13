@@ -14,6 +14,7 @@ class WeatherLocation {
     var name = ""
     var coordinates = ""
     var currentTemp = -999.9
+    var dailySummary = ""
     
     func getWeather(completed: @escaping () -> ()) {
         
@@ -29,6 +30,13 @@ class WeatherLocation {
                 } else {
                     print("Could not return a temperature")
                 }
+                if let summary = json["daily"]["summary"].string {
+                    print("SUMMARY inside getWeather = \(summary)")
+                    self.dailySummary = summary
+                } else {
+                    print("Could not return a temperature")
+                }
+
             case .failure(let error):
                 print(error)
             }
