@@ -107,7 +107,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tqS-3b-BJZ" id="6Mp-yn-Y19">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                         <connections>
@@ -126,7 +126,11 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="IAC-FH-jeu"/>
-                                    <barButtonItem systemItem="add" id="3r1-pC-T4q"/>
+                                    <barButtonItem systemItem="add" id="3r1-pC-T4q">
+                                        <connections>
+                                            <action selector="addButtonPressed:" destination="Xu5-AP-0P3" id="awN-mc-7zv"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                         </subviews>
