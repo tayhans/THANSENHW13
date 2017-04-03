@@ -17,6 +17,7 @@
 		A63AFD2B1E7F865600A1DE0E /* DetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A63AFD2A1E7F865600A1DE0E /* DetailVC.swift */; };
 		A63AFD2D1E7F8A8B00A1DE0E /* ListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A63AFD2C1E7F8A8B00A1DE0E /* ListVC.swift */; };
 		A63AFD2F1E7F8C9200A1DE0E /* PageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A63AFD2E1E7F8C9200A1DE0E /* PageVC.swift */; };
+		A698C14C1E91DE1A00A0DBBC /* DayWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A698C14B1E91DE1A00A0DBBC /* DayWeatherCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		A63AFD2A1E7F865600A1DE0E /* DetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailVC.swift; path = ../DetailVC.swift; sourceTree = "<group>"; };
 		A63AFD2C1E7F8A8B00A1DE0E /* ListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListVC.swift; sourceTree = "<group>"; };
 		A63AFD2E1E7F8C9200A1DE0E /* PageVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageVC.swift; sourceTree = "<group>"; };
+		A698C14B1E91DE1A00A0DBBC /* DayWeatherCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayWeatherCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 				A6026A8D1E88E25800E44CC2 /* Constants.swift */,
 				A63AFD2E1E7F8C9200A1DE0E /* PageVC.swift */,
 				A63AFD2A1E7F865600A1DE0E /* DetailVC.swift */,
+				A698C14B1E91DE1A00A0DBBC /* DayWeatherCell.swift */,
 				A63AFD2C1E7F8A8B00A1DE0E /* ListVC.swift */,
 				A63AFD1C1E7F859F00A1DE0E /* Main.storyboard */,
 				A63AFD1F1E7F859F00A1DE0E /* Assets.xcassets */,
@@ -224,6 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A698C14C1E91DE1A00A0DBBC /* DayWeatherCell.swift in Sources */,
 				A6026A8A1E889CB300E44CC2 /* WeatherLocation.swift in Sources */,
 				A63AFD2D1E7F8A8B00A1DE0E /* ListVC.swift in Sources */,
 				A63AFD2F1E7F8C9200A1DE0E /* PageVC.swift in Sources */,
