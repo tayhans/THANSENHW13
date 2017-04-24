@@ -15,6 +15,8 @@ class PageVC: UIPageViewController {
     var pageControl: UIPageControl!
     var listButton: UIButton!
     let barButtonWidth: CGFloat = 44
+    var aboutButton: UIButton!
+    var aboutButtonSize: CGSize!
 
     
     override func viewDidLoad() {
@@ -24,35 +26,78 @@ class PageVC: UIPageViewController {
         delegate = self
         dataSource = self
         
-        var newLocation = WeatherLocation()
+        // load any saved location data from user defaults
+        if let locationsDefaultsData = UserDefaults.standard.object(forKey: "locationsData") as? Data {
+            if let locationsDefaultsArray = NSKeyedUnarchiver.unarchiveObject(with: locationsDefaultsData) as? [WeatherUserDefault] {
+                locationsArray = locationsDefaultsArray as! [WeatherLocation]
+            } else {
+                print("Error loading data")
+            }
+        } else {
+            print("Error creating array")
+        }
+        
+        let newLocation = WeatherLocation()
         newLocation.name = "Unknown Weather Location"
-        locationsArray.append(newLocation)
+        if locationsArray.count == 0 {
+            locationsArray.append(newLocation)
+        } else {
+            locationsArray[0] = newLocation
+        }
         
         setViewControllers([createDetailVC(forPage: 0)], direction: .forward, animated: false, completion: nil)
         
         configurePageControl()
-        configureListButton()
+        configureButtons()
         
     }
     
-    func configureListButton () {
+    //MARK: - UI Configuration methods
+
+    func configurePageControl() {
+        let pageControlHeight = barButtonWidth
+        let pageControlWidth: CGFloat = view.frame.width - (aboutButtonSize.width * 2)
+        
+        pageControl = UIPageControl(frame: CGRect(x: (view.frame.width - pageControlWidth) / 2, y: view.frame.height - pageControlHeight, width: pageControlWidth, height: pageControlHeight))
+        pageControl.pageIndicatorTintColor = UIColor.lightGray
+        pageControl.currentPageIndicatorTintColor = UIColor.black
+        pageControl.numberOfPages = locationsArray.count
+        pageControl.currentPage = currentPage
+        pageControl.addTarget(self, action: #selector(pageControlPressed), for: .touchUpInside)
+        
+        view.addSubview(pageControl)
+    }
+    
+    func configureButtons() {
         let barButtonHeight = barButtonWidth
         listButton = UIButton(frame: CGRect(x: view.frame.width - barButtonWidth, y: view.frame.height - barButtonHeight, width: barButtonWidth, height: barButtonHeight))
-        
         listButton.setBackgroundImage(UIImage(named: "listbutton"), for: .normal)
         listButton.setBackgroundImage(UIImage(named: "listbutton-highlighted"), for: .highlighted)
-        
-            listButton.addTarget(self, action: #selector(segueToListVC), for: .touchUpInside)
-        
+        listButton.addTarget(self, action: #selector(segueToListVC), for: .touchUpInside)
         view.addSubview(listButton)
         
+        let aboutButtonText = "About..."
+        let aboutButtonFont = UIFont.systemFont(ofSize: 15)
+        let fontAttributes = [NSFontAttributeName: aboutButtonFont]
+        aboutButtonSize = aboutButtonText.size(attributes: fontAttributes)
+        aboutButtonSize.height += 16
+        aboutButtonSize.width = aboutButtonSize.width + 16
+        aboutButton = UIButton(frame: CGRect(x: 8, y: (view.frame.height - 5) - aboutButtonSize.height, width: aboutButtonSize.width, height: aboutButtonSize.height))
+        aboutButton.setTitle(aboutButtonText, for: .normal)
+        aboutButton.setTitleColor(UIColor.darkText, for: .normal)
+        aboutButton.titleLabel?.font = aboutButtonFont
+        aboutButton.addTarget(self, action: #selector(segueToAboutVC), for: .touchUpInside)
+        view.addSubview(aboutButton)
     }
     
     //MARK: - Segues
     
     func segueToListVC(sender: UIButton) {
         performSegue(withIdentifier: "ToListVC", sender: sender)
-        
+    }
+    
+    func segueToAboutVC(sender: UIButton) {
+        performSegue(withIdentifier: "ToAboutVC", sender: sender)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -69,21 +114,6 @@ class PageVC: UIPageViewController {
         setViewControllers([createDetailVC(forPage: currentPage)], direction: .forward, animated: false, completion: nil)
     }
     
-    //MARK: - UI Configuration methods
-    func configurePageControl() {
-        let pageControlHeight: CGFloat = barButtonWidth
-        let pageControlWidth: CGFloat = view.frame.width - (barButtonWidth * 2)
-        
-        pageControl = UIPageControl(frame: CGRect(x: (view.frame.width - pageControlWidth) / 2, y: view.frame.height - pageControlHeight, width: pageControlWidth, height: pageControlHeight))
-        
-        pageControl.pageIndicatorTintColor = UIColor.lightGray
-        pageControl.currentPageIndicatorTintColor = UIColor.black
-        pageControl.numberOfPages = locationsArray.count
-        pageControl.currentPage = currentPage
-        
-        view.addSubview(pageControl)
-        
-    }
     
 // MARK: - Create View Controller for UIPageController
     func createDetailVC(forPage page: Int) -> DetailVC {
@@ -131,5 +161,17 @@ extension PageVC: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
         pageControl.currentPage = currentViewController.currentPage
         }
     }
+    
+    func pageControlPressed() {
+        if let currentViewController = self.viewControllers?[0] as? DetailVC {
+            currentPage = currentViewController.currentPage
+        }
+        if pageControl.currentPage < currentPage {
+            setViewControllers([createDetailVC(forPage: pageControl.currentPage)], direction: .reverse, animated: true, completion: nil)
+        } else if pageControl.currentPage > currentPage {
+            setViewControllers([createDetailVC(forPage: pageControl.currentPage)], direction: .forward, animated: true, completion: nil)
+        }
+    }
+
     
 }

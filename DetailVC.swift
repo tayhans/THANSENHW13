@@ -18,6 +18,7 @@ class DetailVC: UIViewController {
     @IBOutlet weak var summaryLabel: UILabel!
     @IBOutlet weak var currentImage: UIImageView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     var currentPage = 0
     var locationsArray = [WeatherLocation]()
@@ -30,11 +31,19 @@ class DetailVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         locationManager.delegate = self
-        if currentPage == 0 {
-            getLocation()
-        }
+        collectionView.delegate = self
+        collectionView.dataSource = self
+
+        
         locationsArray[currentPage].getWeather {
             self.updateUserInterface()
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if currentPage == 0 {
+            getLocation()
         }
     }
     
@@ -45,14 +54,19 @@ class DetailVC: UIViewController {
         locationLabel.isHidden = isHidden
         
         locationLabel.text = locationsArray[currentPage].name
-        dateLabel.text = formatTimeForTimeZone(unixDateToFormat: locationsArray[currentPage].currentTime, timeZoneString: locationsArray[currentPage].timeZone)
-       // dateLabel.text = locationsArray[currentPage].coordinates
+        
+        if locationsArray[currentPage].currentTime == 0.0 {
+            dateLabel.text = ""
+        } else {
+            dateLabel.text = formatTimeForTimeZone(unixDateToFormat: locationsArray[currentPage].currentTime, timeZoneString: locationsArray[currentPage].timeZone)
+        }
         let curTemperature = String(format: "%3.f", locationsArray[currentPage].currentTemp) + "°"
         temperatureLabel.text = curTemperature
         print("")
         summaryLabel.text = locationsArray[currentPage].dailySummary
         currentImage.image = UIImage(named: locationsArray[currentPage].currentIcon)
         tableView.reloadData()
+        collectionView.reloadData()
     }
     
     func formatTimeForTimeZone(unixDateToFormat: TimeInterval, timeZoneString: String) -> String {
@@ -85,10 +99,19 @@ extension DetailVC: CLLocationManagerDelegate {
         case.authorizedWhenInUse, .authorizedAlways:
             locationManager.startUpdatingLocation()
         case .denied:
-            print("I'm sorry can't show location")
+            if currentPage == 0 && self.view.window != nil {
+                showAlert(title: "User has not authorized location services", message: "Open the Settings app > Privacy > Location Services > WeatherGift to enable location services in this app.")
+            }
         case .restricted:
-            print("parental controls are restricting location in this app")
+            showAlert(title: "Location Services Denied", message: "It may be that parental controls are restricting location use in this app.")
         }
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(defaultAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -97,7 +120,7 @@ extension DetailVC: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        if currentPage == 0 {
+        if currentPage == 0 && self.view.window != nil {
             
             let geoCoder = CLGeocoder()
             
@@ -113,7 +136,7 @@ extension DetailVC: CLLocationManagerDelegate {
                     let placemark = placemarks!.last
                     place = (placemark?.name)!
                 } else {
-                    print("Error retrieving place. Error code: \(error)")
+                    print("Error retrieving place. Error code \(error)")
                     place = "Parts Unknown"
                 }
                 self.locationsArray[0].name = place
@@ -144,5 +167,18 @@ extension DetailVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+}
+
+extension DetailVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return locationsArray[currentPage].hourlyForecastArray.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let hourlyCell = collectionView.dequeueReusableCell(withReuseIdentifier: "HourlyCell", for: indexPath) as! HourlyWeatherCell
+        hourlyCell.configureColletionCell(hourlyForecast: self.locationsArray[currentPage].hourlyForecastArray[indexPath.row], timeZone: self.locationsArray[currentPage].timeZone)
+        return hourlyCell
     }
 }
